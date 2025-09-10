@@ -20,11 +20,15 @@ db = mysql.connector.connect(
     database="laporan_tdx"
 )
 cursor = db.cursor()
+google_creds_json = os.environ.get("GOOGLE_CREDS")
+if not google_creds_json:
+    raise Exception("❌ GOOGLE_CREDS tidak ditemukan!")
 
+creds_dict = json.loads(google_creds_json)
 # 🔹 Setup Google Sheets API
 scope = ["https://spreadsheets.google.com/feeds",
          "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name("google_creds.json", scope)
+creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(creds)
 sheet = client.open_by_key("10u7E3c_IA5irWT0XaKb4eb10taOocH1Q9BK7UrlccDU").sheet1
 
